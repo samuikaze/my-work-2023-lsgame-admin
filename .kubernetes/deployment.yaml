@@ -1,0 +1,58 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <APPLICATION_NAME>
+  labels:
+    app: <APPLICATION_NAME>
+  namespace: <NAMESPACE>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: <APPLICATION_NAME>
+  template:
+    metadata:
+      labels:
+        app: <APPLICATION_NAME>
+    spec:
+      volumes:
+        # 若有需要將 configs.json 綁定到容器中，請打開以下註解
+        # 請務必先建立 <CONFIG_MAP_NAME> 的 configMap 否則部署會失敗
+        # - name: config-volume
+        #   configMap:
+        #     name: <CONFIG_MAP_NAME>
+      containers:
+        - name: <APPLICATION_NAME>
+          image: <REGISTRY_URL>/<IMAGE_NAME>:latest
+          # 若有需要將 configs.json 綁定到容器中，請打開以下註解
+          # volumeMounts:
+          #   - name: config-volume
+          #     mountPath: /usr/share/nginx/html/assets/configs.json
+          #     subPath: config.json
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 250m
+            limits:
+              memory: 512Mi
+              cpu: 250m
+          ports:
+            - containerPort: 80
+              protocol: TCP
+
+---
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: <APPLICATION_NAME>
+  namespace: <NAMESPACE>
+spec:
+  type: ClusterIP
+  selector:
+    app: <APPLICATION_NAME>
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
