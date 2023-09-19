@@ -8,7 +8,7 @@
       "reAttach": true,
       "name": "Launch localhost in Firefox",
       "preLaunchTask": "npm: start",
-      "url": "http://localhost:4200",
+      "url": "http://localhost:5200",
       "webRoot": "${workspaceFolder}"
     },
     {

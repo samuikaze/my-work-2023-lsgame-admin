@@ -1,8 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BaseParams, CustomerHeaders, RequestBody } from './request';
+import { BaseParams, CustomerHeaders, RequestBody } from 'src/app/commons/abstracts/http-client';
 import { SecureLocalStorageService } from '../secure-local-storage/secure-local-storage.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class RequestService {
   private headers: HttpHeaders = new HttpHeaders();
   constructor(
     private http: HttpClient,
+    private router: Router,
     private secureLocalStorageService: SecureLocalStorageService
   ) { }
 
@@ -31,7 +33,8 @@ export class RequestService {
 
     const protocol = `${location.protocol}//`
     const hostname = location.host;
-    const path = location.pathname;
+    const currentPath = (this.router.url === '/') ? location.pathname : location.pathname.replace(this.router.url, '');
+    const path = (currentPath.slice(-1) === '/') ? currentPath : `${currentPath}/`;
     const uri = (originalUri.indexOf('/') === 0) ? originalUri.substring(1) : originalUri;
 
     return `${protocol}${hostname}${path}${uri}`;
@@ -193,5 +196,23 @@ export class RequestService {
         headers: this.headers,
         params: PARAMS,
       });
+  }
+
+  /**
+   * 以表單發起 POST 請求
+   * @param url 請求網址
+   * @param formData 表單資料
+   * @param param 新的查詢字串
+   * @param header 自訂標頭
+   * @returns RxJS 可觀察物件
+   */
+  public formDataPost<T>(url: string, formData: FormData, param?: BaseParams, header?: CustomerHeaders): Observable<T> {
+    this.setHeaders(header);
+    const params = this.setParams(param);
+
+    return this.http.post<T>(url, formData, {
+      headers: this.headers,
+      params: params,
+    });
   }
 }
