@@ -1,6 +1,18 @@
-$padding-value: 12rem;
+.news-admin {
+  th {
+    background-color: rgb(255, 243, 205);
+    font-weight: bold;
 
-.message-info {
-  padding-top: $padding-value;
-  padding-bottom: $padding-value;
+    &:first-child {
+      width: 5%;
+    }
+
+    &:last-child {
+      width: 15%;
+    }
+  }
+
+  td {
+    vertical-align: middle;
+  }
 }
