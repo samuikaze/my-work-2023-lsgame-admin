@@ -1,9 +1,9 @@
 {
-  "name": "angular15-template",
-  "version": "0.0.0",
+  "name": "lsgames-admin",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 5200",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.0",
     "bootstrap": "^5.3.2",
+    "ckeditor4-angular": "^5.0.0",
     "crypto-js": "^4.1.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

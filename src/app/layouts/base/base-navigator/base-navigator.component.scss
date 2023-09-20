@@ -1,0 +1,13 @@
+.navi {
+  --bs-breadcrumb-divider: '>';
+  font-size: 1.5rem;
+  padding-top: 1rem;
+
+  ol {
+    margin-bottom: 0 !important;
+  }
+
+  i {
+    padding-right: .5rem;
+  }
+}
