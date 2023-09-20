@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigatorService } from 'src/app/layouts/base/base-navigator/services/navigator.service';
 import { RouterModule } from '@angular/router';
+import { BreadcrumbService } from 'src/app/services/breadcrumb-service/breadcrumb.service';
+import { CommonService } from 'src/app/services/common-service/common.service';
 
 @Component({
   selector: 'app-product-management',
@@ -11,9 +12,16 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./product-management.component.scss']
 })
 export class ProductManagementComponent implements OnInit {
-  constructor(private navigatorService: NavigatorService) {}
+  constructor(
+    private commonService: CommonService,
+    private breadcrumbService: BreadcrumbService
+  ) {}
 
   ngOnInit(): void {
-    this.navigatorService.setBreadcrumbs(["後台首頁", "作品管理"]);
+    this.commonService.setTitle('作品管理');
+    this.breadcrumbService.setBreadcrumb({
+      title: '作品管理',
+      uri: '/article/product',
+    });
   }
 }

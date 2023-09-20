@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigatorService } from 'src/app/layouts/base/base-navigator/services/navigator.service';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CKEditorModule } from 'ckeditor4-angular';
@@ -8,24 +7,21 @@ import {
   AddNews,
   News,
   NewsList,
-  NewsListResponse,
   NewsType,
 } from './news-management';
 import {
-  HttpClient,
   HttpClientModule,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { BaseResponse, SystemVariable } from 'src/app/commons/abstracts/common';
-import { environment } from 'src/environments/environment';
+import { BaseResponse } from 'src/app/commons/abstracts/common';
 import {
   checkNullAndEmpty,
-  handleHttpClientError,
 } from 'src/app/commons/functions/common-functions';
 import { AppEnvironmentService } from 'src/app/services/app-environment-service/app-environment.service';
 import { ApiServiceTypes } from 'src/app/enums/api-service-types';
 import { RequestService } from 'src/app/services/request-service/request.service';
 import { CommonService } from 'src/app/services/common-service/common.service';
+import { BreadcrumbService } from 'src/app/services/breadcrumb-service/breadcrumb.service';
 
 @Component({
   selector: 'app-news-management',
@@ -64,14 +60,17 @@ export class NewsManagementComponent implements OnInit {
   public totalPage: number = 0;
   constructor(
     private commonService: CommonService,
-    private navigatorService: NavigatorService,
+    private breadcrumbService: BreadcrumbService,
     private requestService: RequestService,
     private appEnvironmentService: AppEnvironmentService
   ) {}
 
   ngOnInit(): void {
     this.commonService.setTitle('最新消息管理');
-    this.navigatorService.setBreadcrumbs(['後台首頁', '最新消息']);
+    this.breadcrumbService.setBreadcrumb({
+      title: '最新消息管理',
+      uri: '/article/news',
+    });
     this.getNewsType();
     this.getNews();
   }

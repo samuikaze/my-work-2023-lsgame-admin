@@ -31,3 +31,8 @@ export declare interface Role {
   id: number;
   name: string;
 }
+
+export declare interface Breadcrumb {
+  title: string;
+  uri: string;
+}

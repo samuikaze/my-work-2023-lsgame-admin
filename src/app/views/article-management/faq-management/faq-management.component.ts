@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigatorService } from 'src/app/layouts/base/base-navigator/services/navigator.service';
 import { RouterModule } from '@angular/router';
+import { BreadcrumbService } from 'src/app/services/breadcrumb-service/breadcrumb.service';
+import { CommonService } from 'src/app/services/common-service/common.service';
 
 @Component({
   selector: 'app-faq-management',
@@ -12,9 +13,16 @@ import { RouterModule } from '@angular/router';
 })
 export class FaqManagementComponent implements OnInit {
 
-  constructor(private navigatorService: NavigatorService) {}
+  constructor(
+    private commonService: CommonService,
+    private breadcrumbService: BreadcrumbService
+  ) {}
 
   ngOnInit(): void {
-    this.navigatorService.setBreadcrumbs(["後台首頁", "常見問題"]);
+    this.commonService.setTitle('常見問題管理');
+    this.breadcrumbService.setBreadcrumb({
+      title: '常見問題管理',
+      uri: '/article/faq',
+    });
   }
 }
