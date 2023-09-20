@@ -24,7 +24,7 @@ spec:
             name: lsgames-admin-configs
       containers:
         - name: lsgames-admin
-          image: <REGISTRY_URL>/<IMAGE_NAME>:latest
+          image: $secrets.REGISTRY_URL/lsgames-admin:latest
           # 若有需要將 configs.json 綁定到容器中，請打開以下註解
           volumeMounts:
             - name: config-volume
