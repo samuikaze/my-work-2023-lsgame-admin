@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/commons/abstracts/single-sign-on';
-import { NavigatorService } from 'src/app/layouts/base/base-navigator/services/navigator.service';
+import { BreadcrumbService } from 'src/app/services/breadcrumb-service/breadcrumb.service';
 import { CommonService } from 'src/app/services/common-service/common.service';
 
 @Component({
@@ -13,16 +13,19 @@ export class HomeComponent implements OnInit {
 
   public userInfo: User = {};
   constructor(
-    private navigatorService: NavigatorService,
+    private breadcrumbService: BreadcrumbService,
     private commonService: CommonService
   ) {}
 
   ngOnInit(): void {
     this.commonService.setTitle('');
-    this.navigatorService.setBreadcrumbs(["後台首頁"]);
+    this.breadcrumbService.setBreadcrumb();
     this.getUserInfo();
   }
 
+  /**
+   * 取得使用者帳號資料
+   */
   private getUserInfo(): void {
     this.userInfo = this.commonService.getUserData();
   }

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigatorService } from 'src/app/layouts/base/base-navigator/services/navigator.service';
 import { RouterModule } from '@angular/router';
+import { BreadcrumbService } from 'src/app/services/breadcrumb-service/breadcrumb.service';
+import { CommonService } from 'src/app/services/common-service/common.service';
 
 @Component({
   selector: 'app-recruit-management',
@@ -11,9 +12,16 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./recruit-management.component.scss']
 })
 export class RecruitManagementComponent implements OnInit {
-  constructor(private navigatorService: NavigatorService) {}
+  constructor(
+    private commonService: CommonService,
+    private breadcrumbService: BreadcrumbService
+  ) {}
 
   ngOnInit(): void {
-    this.navigatorService.setBreadcrumbs(["後台首頁", "招募新血"])
+    this.commonService.setTitle('招募新血管理');
+    this.breadcrumbService.setBreadcrumb({
+      title: '招募新血管理',
+      uri: '/article/recruit',
+    });
   }
 }

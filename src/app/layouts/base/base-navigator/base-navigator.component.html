@@ -1,7 +1,13 @@
-<nav aria-label="breadcrumb" class="navi">
-  <ol class="breadcrumb">
-    <i class="bi bi-geo-alt-fill"></i>
-    <li class="breadcrumb-item" *ngFor="let breadcrumb of breadcrumbs">{{ breadcrumb }}</li>
-  </ol>
-</nav>
+<div class="braedcum col-10 mt-3 mb-2 h5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <i class="bi bi-flag-fill bc-icon"></i>&nbsp;
+      <li class="breadcrumb-item" [class.active]="isLastBreadcrumb(i)"
+        *ngFor="let breadcrumb of breadcrumbs; let i = index">
+        <a *ngIf="!isLastBreadcrumb(i)" [routerLink]="breadcrumb.uri">{{ breadcrumb.title }}</a>
+        <span *ngIf="isLastBreadcrumb(i)">{{ breadcrumb.title }}</span>
+      </li>
+    </ol>
+  </nav>
+</div>
 <hr class="mt-1" />
