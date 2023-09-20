@@ -1,0 +1,122 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 mb-3 text-end">
+      <button class="btn btn-success"  data-bs-toggle="modal" data-bs-target="#add-news">新增消息</button>
+    </div>
+    <div class="col-12 mb-3">
+      <table class="table news-admin">
+        <thead>
+          <tr>
+            <th scope="col">編號</th>
+            <th scope="col">消息標題</th>
+            <th scope="col">管理</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="newsList.length > 0">
+          <tr *ngFor="let news of newsList">
+            <td>{{ news.newsId }}</td>
+            <td>{{ news.newsTitle }}</td>
+            <td>
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit-news">編輯</button>&nbsp;
+              <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirm-delete">刪除</button>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="newsList.length == 0">
+          <tr>
+            <td colspan="3" class="text-center">
+              <span class="h4">目前無可以顯示的最新消息</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 新增消息 -->
+<div class="modal fade" id="add-news" tabindex="-1" aria-labelledby="add-news-label" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="add-news-label">新增消息</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="news-title" class="form-label">消息標題</label>
+          <input type="text" class="form-control" id="news-title" placeholder="請輸入消息標題" [(ngModel)]="addNews.newsTitle">
+        </div>
+        <div class="mb-3">
+          <label for="news-type" class="form-label">消息類型</label>
+          <select class="form-select" aria-label="Default select example" [(ngModel)]="addNews.newsType">
+            <option disabled selected [value]="null">請選擇類型</option>
+            <option *ngFor="let newsType of newsTypes" [value]="newsType.newsTypeId">{{ newsType.name }}</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="news-content" class="form-label">消息內容</label>
+          <ckeditor id="news-content" [(ngModel)]="addNews.newsContent"></ckeditor>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" (click)="createNews()" [disabled]="!canFireCreateNews()">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 編輯消息 -->
+<div class="modal fade" id="edit-news" tabindex="-1" aria-labelledby="edit-news-label" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="edit-news-label">編輯消息</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="edit-news-type" class="form-label">消息類型</label>
+          <select class="form-select" aria-label="Default select example">
+            <option disabled selected [value]="null">請選擇類型</option>
+            <option *ngFor="let newsType of newsTypes" [value]="newsType.newsTypeId">{{ newsType.name }}</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="edit-news-title" class="form-label">消息標題</label>
+          <input type="text" class="form-control" id="edit-news-title" placeholder="請輸入消息標題">
+        </div>
+        <div class="mb-3">
+          <label for="edit-news-content" class="form-label">消息內容</label>
+          <ckeditor id="edit-news-content"></ckeditor>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary">儲存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 刪除確認視窗 -->
+<div class="modal fade" id="confirm-delete" tabindex="-1" aria-labelledby="confirm-delete-label" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirm-delete-label">確認刪除</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          您確定要刪除這則消息嗎？ <span class="fw-bold">這個動作無法復原！</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消返回</button>
+        <button type="button" class="btn btn-danger">確認刪除</button>
+      </div>
+    </div>
+  </div>
+</div>

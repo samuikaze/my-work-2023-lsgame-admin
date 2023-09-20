@@ -1,0 +1,18 @@
+$padding-tb: 5rem;
+$padding-lr: 3rem;
+
+.jumbotron {
+  padding-top: $padding-tb;
+  padding-bottom: $padding-tb;
+  padding-left: $padding-lr;
+  padding-right: $padding-lr;
+
+  h1 {
+    font-weight: bold;
+    font-size: 3rem;
+  }
+
+  p {
+    font-size: 1.3rem;
+  }
+}

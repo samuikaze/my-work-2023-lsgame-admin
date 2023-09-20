@@ -2,34 +2,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: <APPLICATION_NAME>
+  name: lsgames-admin
   labels:
-    app: <APPLICATION_NAME>
-  namespace: <NAMESPACE>
+    app: lsgames-admin
+  namespace: smkz-for-work
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: <APPLICATION_NAME>
+      app: lsgames-admin
   template:
     metadata:
       labels:
-        app: <APPLICATION_NAME>
+        app: lsgames-admin
     spec:
       volumes:
         # 若有需要將 configs.json 綁定到容器中，請打開以下註解
         # 請務必先建立 <CONFIG_MAP_NAME> 的 configMap 否則部署會失敗
-        # - name: config-volume
-        #   configMap:
-        #     name: <CONFIG_MAP_NAME>
+        - name: config-volume
+          configMap:
+            name: lsgames-admin-configs
       containers:
-        - name: <APPLICATION_NAME>
+        - name: lsgames-admin
           image: <REGISTRY_URL>/<IMAGE_NAME>:latest
           # 若有需要將 configs.json 綁定到容器中，請打開以下註解
-          # volumeMounts:
-          #   - name: config-volume
-          #     mountPath: /usr/share/nginx/html/assets/configs.json
-          #     subPath: config.json
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/nginx/html/assets/configs.json
+              subPath: config.json
           resources:
             requests:
               memory: 512Mi
@@ -46,12 +46,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: <APPLICATION_NAME>
-  namespace: <NAMESPACE>
+  name: lsgames-admin
+  namespace: smkz-for-work
 spec:
   type: ClusterIP
   selector:
-    app: <APPLICATION_NAME>
+    app: lsgames-admin
   ports:
     - protocol: TCP
       port: 80
