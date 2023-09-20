@@ -214,7 +214,13 @@ export class LoginComponent {
    * 導向到前台
    */
   public navigateToFrontStage(): void {
-    this.appEnvironmentService.getConfig(ApiServiceTypes.FrontStage)
-      .then(uri => location.href = uri);
+    this.appEnvironmentService.getConfig<string>(ApiServiceTypes.FrontStage)
+      .then(uri => {
+        if (uri != null) {
+          location.href = uri;
+        }
+
+        alert('取得前台網址失敗，請再試一次');
+      });
   }
 }

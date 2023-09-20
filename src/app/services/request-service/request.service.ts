@@ -183,19 +183,24 @@ export class RequestService {
   /**
    * 發起 DELETE 請求
    * @param url 請求網址
+   * @param body 請求酬載
    * @param param 新的查詢字串
    * @param header 自訂標頭
    * @returns RxJS 可觀察物件
    */
-   public delete<T>(url: string, param?: BaseParams, header?: CustomerHeaders): Observable<T> {
+   public delete<T>(url: string, body: RequestBody, param?: BaseParams, header?: CustomerHeaders): Observable<T> {
     this.setHeaders(header);
     const PARAMS = this.setParams(param);
     url = this.preprocessUri(url);
 
-    return this.http.delete<T>(url, {
+    return this.http.delete<T>(
+      url,
+      {
         headers: this.headers,
         params: PARAMS,
-      });
+        body: body
+      },
+    );
   }
 
   /**

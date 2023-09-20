@@ -1,6 +1,8 @@
+import { Modal } from "bootstrap";
+
 export declare interface AddNews {
   newsTitle: string | null;
-  newsType: string | null;
+  newsTypeId: number | null;
   newsContent: string | null;
 }
 
@@ -35,3 +37,21 @@ export declare interface NewsType {
   updatedUserId: number | null;
   updatedAt: Date | null;
 }
+
+export declare interface PageInformation {
+  currentPage: number;
+  totalPage: number;
+}
+
+export declare interface Modals {
+  [key: string]: Modal
+}
+
+export declare interface NewsManagementStatuses {
+  retrieving: boolean;
+  creating: boolean;
+  updating: boolean;
+  deleting: boolean;
+}
+
+export declare type AsNewsType = 'update' | 'delete';

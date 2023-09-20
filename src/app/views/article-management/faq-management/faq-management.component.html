@@ -1,14 +1,130 @@
-<div class="container-fluid">
+<div class="container">
   <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header bg-info">
-          系統訊息
+    <div class="col-12 mb-3 text-end">
+      <button class="btn btn-success" (click)="operationModal('addFaqModal', 'open')">新增常見問題</button>
+    </div>
+    <div class="col-12 mb-3">
+      <table class="table news-admin">
+        <thead>
+          <tr>
+            <th scope="col">編號</th>
+            <th scope="col">消息標題</th>
+            <th scope="col">管理</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="faqList.length > 0">
+          <tr *ngFor="let faq of faqList">
+            <td>{{ faq.faqId }}</td>
+            <td>{{ faq.faqQuestion }}</td>
+            <td>
+              <button
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#edit-faq"
+                (click)="setSpecificFaqData(faq.faqId, 'update')"
+              >
+                編輯
+              </button>&nbsp;
+              <button
+                class="btn btn-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#confirm-delete"
+                (click)="setSpecificFaqData(faq.faqId, 'delete')"
+              >
+                刪除
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="faqList.length == 0">
+          <tr>
+            <td colspan="3" class="text-center">
+              <span class="h4">目前無可以顯示的常見問題</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 新增常見問題 -->
+<div class="modal fade" id="addFaq" tabindex="-1" aria-labelledby="addFaqLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addFaqLabel">新增常見問題</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="add-faq-question" class="form-label">問題</label>
+          <input type="text" class="form-control" id="add-faq-question" placeholder="請輸入問題" [(ngModel)]="addFaq.faqQuestion">
         </div>
-        <div class="card-body text-center message-info">
-          <h3 class="card-title mb-3">此部分由於須搭配樣式設計，故目前須以人工修改方式完成</h3>
-          <a routerLink="/" class="btn btn-info">返回後台首頁</a>
+        <div class="mb-3">
+          <label for="add-faq-answer" class="form-label">解答</label>
+          <input type="text" class="form-control" id="add-faq-answer" placeholder="請輸入解答" [(ngModel)]="addFaq.faqAnswer">
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" (click)="fireCreateFaq()" [disabled]="!canFireCreateFaq()">
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.creating"></span>
+          {{ statuses.creating ? '儲存中 ...' : '儲存' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 編輯常見問題 -->
+<div class="modal fade" id="editFaq" tabindex="-1" aria-labelledby="editFaqLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editFaqLabel">編輯常見問題</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="add-faq-question" class="form-label">問題</label>
+          <input type="text" class="form-control" id="add-faq-question" placeholder="請輸入問題" [(ngModel)]="editFaq.faqQuestion">
+        </div>
+        <div class="mb-3">
+          <label for="add-faq-answer" class="form-label">解答</label>
+          <input type="text" class="form-control" id="add-faq-answer" placeholder="請輸入解答" [(ngModel)]="editFaq.faqAnswer">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" (click)="fireEditFaq()" [disabled]="!canFireEditFaq()">
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.updating"></span>
+          {{ statuses.updating ? '修改中 ...' : '修改' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 刪除確認視窗 -->
+<div class="modal fade" id="confirmDeleteFaq" tabindex="-1" aria-labelledby="confirmDeleteFaqLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmDeleteFaqLabel">確認刪除</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          您確定要刪除這則常見問題嗎？ <span class="fw-bold">這個動作無法復原！</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消返回</button>
+        <button type="button" class="btn btn-danger" (click)="fireDeleteFaq()" [disabled]="statuses.deleting">
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.deleting"></span>
+          {{ statuses.deleting ? '刪除中 ...' : '確認刪除' }}
+        </button>
       </div>
     </div>
   </div>
