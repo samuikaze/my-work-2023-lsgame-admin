@@ -54,10 +54,10 @@ export class AppEnvironmentService {
    * @param key 設定值鍵名
    * @returns 設定值
    */
-  public async getConfig(key: string): Promise<any> {
+  public async getConfig<T>(key: string): Promise<T|undefined> {
     if (this.configFromJson === undefined) {
       await new Promise<void>(resolve => setTimeout(resolve, 100));
-      return this.getConfig(key);
+      return this.getConfig<T>(key);
     }
 
     if (Object.keys(this.configFromJson).includes(key)) {
@@ -65,7 +65,7 @@ export class AppEnvironmentService {
     }
 
     if (Object.keys(environment).includes(key)) {
-      return environment[key as keyof typeof environment];
+      return environment[key as keyof typeof environment] as T;
     }
 
     return undefined;
