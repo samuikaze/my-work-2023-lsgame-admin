@@ -13,7 +13,7 @@ import { BaseHeaderComponent } from './layouts/base/base-header/base-header.comp
     imports: [BaseHeaderComponent, BaseBodyComponent, BaseFooterComponent]
 })
 export class AppComponent implements OnInit {
-  title = 'angular15-template';
+  title = 'lsgames-admin';
 
   constructor(
     private appEnvironmentService: AppEnvironmentService,

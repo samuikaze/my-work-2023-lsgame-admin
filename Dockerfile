@@ -17,12 +17,12 @@ COPY src src
 
 RUN chmod +x ./.infrastructures/generate-secret-key.sh && \
   /bin/ash ./.infrastructures/generate-secret-key.sh && \
-  ng build -c production --base-href /template/
+  ng build -c production --base-href /forwork/lsgames/backstage/
 
 FROM nginx:alpine
 
-COPY --from=builder /usr/app/dist/frontend /usr/share/nginx/html
-COPY ./nginx-configuration.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /usr/app/dist/build-bundles /usr/share/nginx/html
+COPY ./.infrastructures/nginx-configuration.conf /etc/nginx/conf.d/default.conf
 
 RUN find /usr/share/nginx/html -type f -exec chmod 644 {} \; \
   && find /usr/share/nginx/html -type d -exec chmod 755 {} \; \

@@ -1,6 +1,6 @@
 {
-  "name": "angular15-template",
-  "version": "0.0.0",
+  "name": "lsgames-admin",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 5200",
