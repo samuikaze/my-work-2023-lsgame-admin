@@ -1,33 +1,48 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { NavigatorService } from './services/navigator.service';
+import { BreadcrumbService } from 'src/app/services/breadcrumb-service/breadcrumb.service';
+import { Breadcrumb } from 'src/app/commons/abstracts/common';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-base-navigator',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './base-navigator.component.html',
   styleUrls: ['./base-navigator.component.scss']
 })
-export class BaseNavigatorComponent implements OnInit, OnDestroy {
-  public breadcrumbs: Array<string> = [];
-  private eventSubscriptor: Subscription;
+export class BaseNavigatorComponent implements OnInit {
+  public breadcrumbs: Breadcrumb[] = [];
 
-  constructor(navigatorService: NavigatorService) {
-    this.eventSubscriptor = navigatorService.getEvent().subscribe({
-      next: (breadcrumbs: Array<string>) => this.breadcrumbs = breadcrumbs,
-      error: errors => console.error(errors),
+  constructor(
+    private breadcrumbService: BreadcrumbService,
+    private router: Router
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    this.router.events.subscribe(async (event) => {
+      if (event instanceof NavigationEnd) {
+        this.getBreadcrumb();
+      }
     });
   }
 
-  ngOnInit(): void {
-    if (this.breadcrumbs.length === 0) {
-      this.breadcrumbs = ["後台首頁"];
-    }
+  /**
+   * 確認是否為最後一筆麵包屑
+   * @param index 索引
+   * @returns 是否為最後一筆麵包屑
+   */
+  public isLastBreadcrumb(index: number): boolean {
+    return index == this.breadcrumbs.length - 1;
   }
 
-  ngOnDestroy(): void {
-    this.eventSubscriptor.unsubscribe();
+  /**
+   * 取得目前麵包屑
+   */
+  public getBreadcrumb(): void {
+    setTimeout(() => {
+      this.breadcrumbs = this.breadcrumbService.getBreadcrumb();
+    }, 50);
   }
 }

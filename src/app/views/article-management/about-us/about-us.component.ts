@@ -1,20 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigatorService } from 'src/app/layouts/base/base-navigator/services/navigator.service';
 import { RouterModule } from '@angular/router';
+import { CommonService } from 'src/app/services/common-service/common.service';
+import { BreadcrumbService } from 'src/app/services/breadcrumb-service/breadcrumb.service';
 
 @Component({
   selector: 'app-about-us',
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './about-us.component.html',
-  styleUrls: ['./about-us.component.scss']
+  styleUrls: ['./about-us.component.scss'],
 })
 export class AboutUsComponent implements OnInit {
-
-  constructor(private navigatorService: NavigatorService) {}
+  constructor(
+    private commonService: CommonService,
+    private breadcrumbService: BreadcrumbService
+  ) {}
 
   ngOnInit(): void {
-    this.navigatorService.setBreadcrumbs(["後台首頁", "關於我們"])
+    this.commonService.setTitle('關於我們管理');
+    this.breadcrumbService.setBreadcrumb({
+      title: '關於我們管理',
+      uri: '/article/aboutus',
+    });
   }
 }

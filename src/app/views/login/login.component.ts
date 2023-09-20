@@ -14,6 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Buffer } from 'buffer';
 import { Abilities } from 'src/app/enums/abilities';
 import { CommonService } from 'src/app/services/common-service/common.service';
+import { BreadcrumbService } from 'src/app/services/breadcrumb-service/breadcrumb.service';
 
 @Component({
   selector: 'app-login',
@@ -33,6 +34,7 @@ export class LoginComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private breadcrumbService: BreadcrumbService,
     private secureLocalStorageService: SecureLocalStorageService,
     private requestService: RequestService,
     private appEnvironmentService: AppEnvironmentService,
@@ -41,12 +43,12 @@ export class LoginComponent {
 
   ngOnInit(): void {
     this.commonService.setTitle('登入驗證');
+    this.breadcrumbService.setBreadcrumb({ title: '登入驗證', uri: '/' });
     this.loginFromToken()
       .then(result => {
         this.statuses.signing = false;
 
         if (result) {
-          console.log(result);
           this.router.navigate(['/home']);
         }
       });
