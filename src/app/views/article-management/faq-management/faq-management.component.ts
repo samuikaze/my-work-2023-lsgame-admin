@@ -9,7 +9,7 @@ import { ApiServiceTypes } from 'src/app/enums/api-service-types';
 import { RequestService } from 'src/app/services/request-service/request.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { Modal } from 'bootstrap';
+import Modal from 'bootstrap/js/dist/modal';
 
 @Component({
   selector: 'app-faq-management',
