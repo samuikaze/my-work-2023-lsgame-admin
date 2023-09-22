@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { BreadcrumbService } from 'src/app/services/breadcrumb-service/breadcrumb.service';
 import { CommonService } from 'src/app/services/common-service/common.service';
-import { AddFaqRequest, AsFaqType, Faq, FaqManagementStatuses, GetFaqListResponse, Modals, PageInformation } from './faq-management';
+import { AddFaqRequest, AsFaqType, Faq, FaqManagementStatuses, GetFaqListResponse } from './faq-management';
 import { AppEnvironmentService } from 'src/app/services/app-environment-service/app-environment.service';
 import { ApiServiceTypes } from 'src/app/enums/api-service-types';
 import { RequestService } from 'src/app/services/request-service/request.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import Modal from 'bootstrap/js/dist/modal';
+import { Modals, PageInformation } from 'src/app/commons/abstracts/common';
 
 @Component({
   selector: 'app-faq-management',

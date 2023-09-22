@@ -6,12 +6,10 @@ import { CKEditorModule } from 'ckeditor4-angular';
 import {
   AddNews,
   AsNewsType,
-  Modals,
   News,
   NewsList,
   NewsManagementStatuses,
   NewsType,
-  PageInformation,
 } from './news-management';
 import {
   HttpClientModule,
@@ -26,6 +24,7 @@ import { RequestService } from 'src/app/services/request-service/request.service
 import { CommonService } from 'src/app/services/common-service/common.service';
 import { BreadcrumbService } from 'src/app/services/breadcrumb-service/breadcrumb.service';
 import Modal from 'bootstrap/js/dist/modal';
+import { Modals, PageInformation } from 'src/app/commons/abstracts/common';
 
 @Component({
   selector: 'app-news-management',

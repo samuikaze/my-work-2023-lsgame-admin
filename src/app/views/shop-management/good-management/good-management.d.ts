@@ -1,4 +1,4 @@
-import { Modal } from "bootstrap";
+import { BaseStatuses } from "src/app/commons/abstracts/common";
 
 export declare interface Good {
   goodId: number;
@@ -22,26 +22,6 @@ export declare interface AddGood {
   quantity?: number;
 }
 
-export declare interface PageInformation {
-  currentPage: number;
-  totalPage: number;
-}
-
-export declare interface Modals {
-  [key: string]: Modal
-}
-
-export declare interface GoodManagementStatuses {
-  retrieving: boolean;
-  creating: boolean;
-  updating: boolean;
-  deleting: boolean;
-}
-
-export declare interface SelectedImage {
-  dataurl: string;
-  filename: string;
-  size: number;
-}
+export declare interface GoodManagementStatuses extends BaseStatuses {}
 
 export declare type AsGoodType = 'update' | 'delete';
