@@ -1,4 +1,4 @@
-import { Modal } from "bootstrap";
+import { BaseStatuses } from "src/app/commons/abstracts/common";
 
 export declare interface AddNews {
   newsTitle: string | null;
@@ -38,20 +38,6 @@ export declare interface NewsType {
   updatedAt: Date | null;
 }
 
-export declare interface PageInformation {
-  currentPage: number;
-  totalPage: number;
-}
-
-export declare interface Modals {
-  [key: string]: Modal
-}
-
-export declare interface NewsManagementStatuses {
-  retrieving: boolean;
-  creating: boolean;
-  updating: boolean;
-  deleting: boolean;
-}
+export declare interface NewsManagementStatuses extends BaseStatuses {}
 
 export declare type AsNewsType = 'update' | 'delete';

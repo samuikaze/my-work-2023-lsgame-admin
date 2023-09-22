@@ -1,3 +1,5 @@
+import { Modal } from "bootstrap";
+
 export declare interface BaseResponse<T> {
   status: number;
   message: string|null;
@@ -35,4 +37,26 @@ export declare interface Role {
 export declare interface Breadcrumb {
   title: string;
   uri: string;
+}
+
+export declare interface Modals {
+  [key: string]: Modal;
+}
+
+export declare interface PageInformation {
+  currentPage: number;
+  totalPage: number;
+}
+
+export declare interface SelectedImage {
+  dataurl: string;
+  filename: string;
+  size: number;
+}
+
+export declare interface BaseStatuses {
+  retrieving: boolean;
+  creating: boolean;
+  updating: boolean;
+  deleting: boolean;
 }
