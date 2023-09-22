@@ -24,6 +24,13 @@ const routes: Routes = [
             './views/article-management/article-management-routing.module'
           ).then((m) => m.ArticleManagementRoutingModule),
       },
+      {
+        path: 'shop',
+        loadChildren: () =>
+          import(
+            './views/shop-management/shop-management-routing.module'
+          ).then((m) => m.ShopManagementRoutingModule),
+      }
     ],
   },
 ];

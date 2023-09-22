@@ -188,7 +188,7 @@ export class RequestService {
    * @param header 自訂標頭
    * @returns RxJS 可觀察物件
    */
-   public delete<T>(url: string, body: RequestBody, param?: BaseParams, header?: CustomerHeaders): Observable<T> {
+   public delete<T>(url: string, body?: RequestBody, param?: BaseParams, header?: CustomerHeaders): Observable<T> {
     this.setHeaders(header);
     const PARAMS = this.setParams(param);
     url = this.preprocessUri(url);
