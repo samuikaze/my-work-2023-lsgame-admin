@@ -1,4 +1,4 @@
-import { Modal } from "bootstrap";
+import { BaseStatuses } from "src/app/commons/abstracts/common";
 
 export declare interface Faq {
   faqId: number;
@@ -15,25 +15,11 @@ export declare interface AddFaqRequest {
   faqAnswer: string;
 }
 
-export declare interface PageInformation {
-  currentPage: number;
-  totalPage: number;
-}
-
 export declare interface GetFaqListResponse {
   faqList: Array<Faq>;
   totalPages: number;
 }
 
-export declare interface FaqManagementStatuses {
-  retrieving: boolean;
-  creating: boolean;
-  updating: boolean;
-  deleting: boolean;
-}
+export declare interface FaqManagementStatuses extends BaseStatuses {}
 
 export declare type AsFaqType = 'update' | 'delete';
-
-export declare interface Modals {
-  [key: string]: Modal
-}
