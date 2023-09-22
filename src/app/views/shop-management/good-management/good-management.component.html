@@ -1,0 +1,189 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 mb-3 text-end">
+      <button type="button" class="btn btn-success" (click)="operationModal('addGoodModal', 'open')">新增商品</button>
+    </div>
+    <div class="col-12 mb-3">
+      <table class="table good-admin">
+        <thead>
+          <tr>
+            <th scope="col">編號</th>
+            <th scope="col">商品名稱</th>
+            <th scope="col">管理</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="goodList.length > 0">
+          <tr *ngFor="let good of goodList">
+            <td>{{ good.goodId }}</td>
+            <td>{{ good.name }}</td>
+            <td>
+              <button
+                class="btn btn-primary"
+                (click)="setSpecificGoodData(good.goodId, 'update')"
+              >
+                編輯
+              </button>&nbsp;
+              <button
+                class="btn btn-danger"
+                (click)="setSpecificGoodData(good.goodId, 'delete')"
+              >
+                下架
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="goodList.length == 0">
+          <tr>
+            <td colspan="3" class="text-center">
+              <span class="h4">目前無可以顯示的商品資料</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 新增商品 -->
+<div class="modal fade" id="addGood" tabindex="-1" aria-labelledby="addGoodLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addGoodLabel">新增商品</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="good-name" class="form-label">商品名稱</label>
+          <input type="text" class="form-control" id="good-name" placeholder="請輸入商品名稱" [(ngModel)]="addGood.name">
+        </div>
+        <div class="mb-3">
+          <label for="good-price" class="form-label">商品價格</label>
+          <input type="number" class="form-control" id="good-price" placeholder="請輸入商品價格" [(ngModel)]="addGood.price">
+        </div>
+        <div class="mb-3">
+          <label for="good-quantity" class="form-label">商品在庫量</label>
+          <input type="number" class="form-control" id="good-quantity" placeholder="請輸入商品在庫量" [(ngModel)]="addGood.quantity">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">商品描述</label>
+          <ckeditor [(ngModel)]="addGood.description"></ckeditor>
+        </div>
+        <div class="mb-3">
+          <label for="good-image" class="form-label">商品圖片</label><br />
+          <img [src]="getImageUrl()" *ngIf="selectedImage.dataurl.length > 0" class="img-thumbnail mt-0 mb-2" alt="商品圖片" />
+          <input
+            #addGoodImage
+            class="form-control"
+            type="file"
+            accept="image/*"
+            id="good-image"
+            (change)="readImageUrl($event)"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="operationModal('addGoodModal', 'close'); clearAddGoodForm()"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="fireCreateGood()"
+          [disabled]="!canFireCreateGood()"
+        >
+        <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.creating"></span>
+          {{ statuses.creating ? '儲存中 ...' : '儲存' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 編輯商品 -->
+<div class="modal fade" id="editGood" tabindex="-1" aria-labelledby="editGoodLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editGoodLabel">編輯商品</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="good-name" class="form-label">商品名稱</label>
+          <input type="text" class="form-control" id="good-name" placeholder="請輸入商品名稱" [(ngModel)]="editGood.name">
+        </div>
+        <div class="mb-3">
+          <label for="good-price" class="form-label">商品價格</label>
+          <input type="number" class="form-control" id="good-price" placeholder="請輸入商品價格" [(ngModel)]="editGood.price">
+        </div>
+        <div class="mb-3">
+          <label for="good-quantity" class="form-label">商品在庫量</label>
+          <input type="number" class="form-control" id="good-quantity" placeholder="請輸入商品在庫量" [(ngModel)]="editGood.quantity">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">商品描述</label>
+          <ckeditor [(ngModel)]="editGood.description"></ckeditor>
+        </div>
+        <div class="mb-3">
+          <label for="good-image" class="form-label">商品圖片</label><br />
+          <img [src]="getImageUrl()" *ngIf="getImageUrl() != undefined" class="img-thumbnail mt-0 mb-2" alt="商品圖片" />
+          <input
+            #editGoodImage
+            class="form-control"
+            type="file"
+            accept="image/*"
+            id="good-image"
+            (change)="readImageUrl($event)"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="operationModal('editGoodModal', 'close'); clearEditGoodForm()"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="fireEditGood()"
+          [disabled]="!canFireEditGood()"
+        >
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.updating"></span>
+          {{ statuses.updating ? '更新中 ...' : '儲存' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 刪除確認視窗 -->
+<div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmDeleteLabel">確認刪除</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          您確定要下架這筆商品嗎？ <span class="fw-bold">這個動作無法復原！</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消返回</button>
+        <button type="button" class="btn btn-danger" (click)="fireDeleteGood()" [disabled]="statuses.deleting">
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.deleting"></span>
+          {{ statuses.deleting ? '刪除中' : '確認刪除' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
