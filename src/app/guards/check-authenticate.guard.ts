@@ -16,7 +16,7 @@ export const checkAuthenticateGuard: CanActivateFn = (
   return new Promise<boolean>(async (resolve, reject) => {
     const commonService = inject(CommonService);
     const router = inject(Router);
-    const authed = commonService.checkAuthenticateStateOffline();
+    const authed = await commonService.checkAuthenticateState();
 
     if (! authed) {
       router.navigate(['/']);

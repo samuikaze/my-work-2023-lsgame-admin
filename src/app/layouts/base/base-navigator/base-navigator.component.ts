@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
 import { BreadcrumbService } from 'src/app/services/breadcrumb-service/breadcrumb.service';
 import { Breadcrumb } from 'src/app/commons/abstracts/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
