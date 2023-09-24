@@ -236,47 +236,16 @@ export class GoodManagementComponent implements OnInit {
    * 上傳商品圖片
    * @returns 商品圖檔路徑
    */
-  private async uploadGoodImage(): Promise<string|null> {
-    if (this.selectedImage.dataurl.length > 0) {
-      const array = this.selectedImage.dataurl.split(',');
-      const mimeMatch = array[0].match(/:(.*?);/);
-      if (mimeMatch == null) {
-        throw new Error('無法辨別圖檔的檔案類型');
-      }
-      const mime = mimeMatch[1];
-      const byteString = atob(array[1]);
-      let times = byteString.length;
-      let uint8Array = new Uint8Array(times);
+  private async uploadGoodImage(): Promise<string> {
+    try {
+      const goodImage = this.commonService.convertDataUrlToBlob(this.selectedImage.dataurl);
 
-      while (times--) {
-        uint8Array[times] = byteString.charCodeAt(times);
-      }
-
-      console.log(uint8Array);
-      const goodImage = new Blob([uint8Array], {type: mime});
-
-      let formData = new FormData();
-      formData.append('uploadId', uuidv4());
-      formData.append('filename', this.selectedImage.filename);
-      formData.append('file', goodImage);
-
-      const baseUri = await this.appEnvironmentService.getConfig(ApiServiceTypes.FileStorageService);
-      const uri = `${baseUri}/api/v1/file/upload`;
-      return new Promise<string>((resolve, reject) => {
-        this.requestService.formDataPost<BaseResponse<SingleFileUploadResponse>>(uri, formData)
-          .subscribe({
-            next: response => {
-              resolve(response.data.path);
-            },
-            error: (errors: HttpErrorResponse) => {
-              this.requestService.requestFailedHandler(errors);
-              reject(errors);
-            }
-          });
-      });
+      return await this.commonService.uploadFile(this.selectedImage.filename, goodImage);
+    } catch (error) {
+      console.error(error);
+      alert(error);
+      throw error;
     }
-
-    return null;
   }
 
   /**
@@ -349,7 +318,7 @@ export class GoodManagementComponent implements OnInit {
   public setSpecificGoodData(goodId: number, as: AsGoodType): void {
     const news = this.goodList.filter(good => good.goodId === goodId);
     if (news.length === 0) {
-      alert('找不到該筆常見問題');
+      alert('找不到該筆商品');
     }
 
     switch (as) {
