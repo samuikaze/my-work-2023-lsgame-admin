@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-12 text-end mb-3">
-      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add-carousel">新增輪播</button>
+      <button class="btn btn-success" (click)="operationModal('addCarouselModal', 'open')">新增輪播</button>
     </div>
     <div class="col-12">
       <table class="table carousel-admin">
@@ -12,13 +12,30 @@
             <th scope="col">管理</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>123.jpg</td>
+        <tbody *ngIf="carouselList.length > 0">
+          <tr *ngFor="let carousel of carouselList">
+            <td>{{ carousel.carouselId }}</td>
+            <td>{{ carousel.description }}</td>
             <td>
-              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit-carousel">編輯</button>&nbsp;
-              <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirm-delete">刪除</button>
+              <button
+                class="btn btn-primary"
+                (click)="setSpecificGoodData(carousel.carouselId, 'update')"
+              >
+                編輯
+              </button>&nbsp;
+              <button
+                class="btn btn-danger"
+                (click)="setSpecificGoodData(carousel.carouselId, 'delete')"
+              >
+                刪除
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="carouselList.length == 0">
+          <tr>
+            <td colspan="3" class="text-center">
+              <span class="h4">目前無可以顯示的圖片輪播資料</span>
             </td>
           </tr>
         </tbody>
@@ -28,80 +45,170 @@
 </div>
 
 <!-- 新增輪播 -->
-<div class="modal fade" id="add-carousel" tabindex="-1" aria-labelledby="add-carousel-label" aria-hidden="true">
+<div class="modal fade" id="addCarousel" tabindex="-1" aria-labelledby="addCarouselLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="add-carousel-label">新增輪播</h1>
+        <h1 class="modal-title fs-5" id="addCarouselLabel">新增輪播</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="mb-3">
+          <label for="carousel-title" class="form-label">輪播標題</label>
+          <input
+            type="text"
+            class="form-control"
+            id="carousel-title"
+            placeholder="請輸入顯示於輪播圖下方的標題文字，不填可留空"
+            [(ngModel)]="addCarousel.carouselTitle"
+          />
+        </div>
+        <div class="mb-3">
           <label for="carousel-description" class="form-label">輪播描述</label>
-          <input type="text" class="form-control" id="carousel-description" placeholder="請輸入顯示於輪播圖下方的描述文字，不填可留空">
+          <input
+            type="text"
+            class="form-control"
+            id="carousel-description"
+            placeholder="請輸入顯示於輪播圖下方的描述文字，此項為必填"
+            [(ngModel)]="addCarousel.description"
+          />
         </div>
         <div class="mb-3">
           <label for="carousel-link" class="form-label">輪播位址</label>
-          <input type="text" class="form-control" id="carousel-link" placeholder="請輸入當按下輪播圖時欲跳轉的位址，不填可留空">
+          <input
+            type="text"
+            class="form-control"
+            id="carousel-link"
+            placeholder="請輸入當按下輪播圖時欲跳轉的位址，不填可留空"
+            [(ngModel)]="addCarousel.link"
+          />
         </div>
         <div class="mb-3">
           <label for="carousel-image" class="form-label">輪播圖片</label>
-          <input class="form-control" type="file" id="carousel-image"  aria-describedby="carousel-image-help">
+          <img
+            [src]="getImageUrl()"
+            *ngIf="selectedImage.dataurl.length > 0"
+            class="img-thumbnail mt-0 mb-2"
+            alt="輪播圖片"
+          />
+          <input
+            #addCarouselImage
+            class="form-control"
+            type="file"
+            accept="image/*"
+            id="carousel-image"
+            (change)="readImageUrl($event)"
+          />
           <div id="carousel-image-help" class="form-text">
             建議解析度為 1280 × 620，若上傳非此比例之解析度圖片可能導致樣式跑位，此為必要項目
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary">儲存</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="operationModal('addCarouselModal', 'close'); clearAddCarouselForm()"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="fireCreateCarousel()"
+          [disabled]="!canFireCreateCarousel()"
+        >
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.creating"></span>
+          {{ statuses.creating ? '儲存中 ...' : '儲存' }}
+        </button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- 編輯輪播 -->
-<div class="modal fade" id="edit-carousel" tabindex="-1" aria-labelledby="edit-carousel-label" aria-hidden="true">
+<div class="modal fade" id="editCarousel" tabindex="-1" aria-labelledby="editCarouselLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="edit-carousel-label">編輯輪播</h1>
+        <h1 class="modal-title fs-5" id="editCarouselLabel">編輯輪播</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="mb-3">
+          <label for="carousel-title" class="form-label">輪播標題</label>
+          <input
+            type="text"
+            class="form-control"
+            id="carousel-title"
+            placeholder="請輸入顯示於輪播圖下方的標題文字，不填可留空"
+            [(ngModel)]="editCarousel.carouselTitle"
+          />
+        </div>
+        <div class="mb-3">
           <label for="carousel-description" class="form-label">輪播描述</label>
-          <input type="text" class="form-control" id="carousel-description" placeholder="請輸入顯示於輪播圖下方的描述文字，不填可留空">
+          <input
+            type="text"
+            class="form-control"
+            id="carousel-description"
+            placeholder="請輸入顯示於輪播圖下方的描述文字，此項為必填"
+            [(ngModel)]="editCarousel.description"
+          />
         </div>
         <div class="mb-3">
           <label for="carousel-link" class="form-label">輪播位址</label>
-          <input type="text" class="form-control" id="carousel-link" placeholder="請輸入當按下輪播圖時欲跳轉的位址，不填可留空">
+          <input
+            type="text"
+            class="form-control"
+            id="carousel-link"
+            placeholder="請輸入當按下輪播圖時欲跳轉的位址，不填可留空"
+            [(ngModel)]="editCarousel.link"
+          />
         </div>
         <div class="mb-3">
           <label for="carousel-image" class="form-label">輪播圖片</label>
-          <input class="form-control" type="file" id="carousel-image"  aria-describedby="carousel-image-help">
+          <img [src]="getImageUrl()" *ngIf="getImageUrl() != undefined" class="img-thumbnail mt-0 mb-2" alt="輪播圖片" />
+          <input
+            class="form-control"
+            type="file"
+            id="carousel-image"
+            aria-describedby="carousel-image-help"
+            accept="image/*"
+            (change)="readImageUrl($event)"
+          />
           <div id="carousel-image-help" class="form-text">
             建議解析度為 1280 × 620，若上傳非此比例之解析度圖片可能導致樣式跑位，此為必要項目
           </div>
         </div>
-        <div class="mb-3 text-center">
-          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#carousel-image-viewer">檢視圖片</button>
-        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-        <button type="button" class="btn btn-primary">儲存</button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="operationModal('editCarouselModal', 'close'); clearEditCarouselForm()"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="fireEditCarousel()"
+          [disabled]="!canFireEditCarousel()"
+        >
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.updating"></span>
+          {{ statuses.updating ? '更新中 ...' : '儲存' }}
+        </button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- 刪除確認視窗 -->
-<div class="modal fade" id="confirm-delete" tabindex="-1" aria-labelledby="confirm-delete-label" aria-hidden="true">
+<div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="confirm-delete-label">確認刪除</h1>
+        <h1 class="modal-title fs-5" id="confirmDeleteLabel">確認刪除</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -111,24 +218,10 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消返回</button>
-        <button type="button" class="btn btn-danger">確認刪除</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 圖片檢視器 -->
-<div class="modal fade" id="carousel-image-viewer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="carousel-image-viewer-label" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="carousel-image-viewer-label">檢視圖片</h1>
-      </div>
-      <div class="modal-body">
-        <img src="/assets/images/carousel/carousel-1.jpg" class="img-fluid" alt="carousel-1">
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#edit-carousel">返回編輯表單</button>
+        <button type="button" class="btn btn-danger" (click)="fireDeleteCarousel()" [disabled]="statuses.deleting">
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.deleting"></span>
+          {{ statuses.deleting ? '刪除中' : '確認刪除' }}
+        </button>
       </div>
     </div>
   </div>
