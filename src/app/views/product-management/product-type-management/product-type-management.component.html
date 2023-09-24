@@ -1,0 +1,141 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 mb-3 text-end">
+      <button type="button" class="btn btn-success" (click)="operationModal('addProductTypeModal', 'open')">新增作品分類</button>
+    </div>
+    <div class="col-12 mb-3">
+      <table class="table product-type-admin">
+        <thead>
+          <tr>
+            <th scope="col">編號</th>
+            <th scope="col">作品分類名稱</th>
+            <th scope="col">管理</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="productTypeList.length > 0">
+          <tr *ngFor="let productType of productTypeList">
+            <td>{{ productType.productTypeId }}</td>
+            <td>{{ productType.productTypeName }}</td>
+            <td>
+              <button
+                class="btn btn-primary"
+                (click)="setSpecificProductTypeData(productType.productTypeId, 'update')"
+              >
+                編輯
+              </button>&nbsp;
+              <button
+                class="btn btn-danger"
+                (click)="setSpecificProductTypeData(productType.productTypeId, 'delete')"
+              >
+                刪除
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="productTypeList.length == 0">
+          <tr>
+            <td colspan="3" class="text-center">
+              <span class="h4">目前無可以顯示的作品分類資料</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 新增作品分類 -->
+<div class="modal fade" id="addProductType" tabindex="-1" aria-labelledby="addProductTypeLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addProductTypeLabel">新增作品分類</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="add-product-type-name" class="form-label">作品分類名稱</label>
+          <input type="text" class="form-control" id="add-product-type-name" placeholder="作品分類名稱" [(ngModel)]="addProductType.productTypeName" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="operationModal('addProductTypeModal', 'close'); clearAddProductTypeForm()"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="fireCreateProductType()"
+          [disabled]="!canFireCreateProductType()"
+        >
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.creating"></span>
+          {{ statuses.creating ? '儲存中 ...' : '儲存' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 編輯作品分類 -->
+<div class="modal fade" id="editProductType" tabindex="-1" aria-labelledby="editProductTypeLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editProductTypeLabel">編輯作品分類</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="edit-product-type-name" class="form-label">作品分類名稱</label>
+          <input type="text" class="form-control" id="edit-product-type-name" placeholder="請輸入作品分類名稱" [(ngModel)]="editProductType.productTypeName">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="operationModal('editProductTypeModal', 'close'); clearEditProductTypeForm()"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="fireEditProductType()"
+          [disabled]="!canFireEditProductType()"
+        >
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.updating"></span>
+          {{ statuses.updating ? '更新中 ...' : '儲存' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 刪除確認視窗 -->
+<div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmDeleteLabel">確認刪除</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          您確定要刪除這筆作品分類嗎？ <span class="fw-bold">這個動作無法復原！</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消返回</button>
+        <button type="button" class="btn btn-danger" (click)="fireDeleteProductType()" [disabled]="statuses.deleting">
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.deleting"></span>
+          {{ statuses.deleting ? '刪除中' : '確認刪除' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -10,9 +10,6 @@ import Modal from 'bootstrap/js/dist/modal';
 import { AddGood, AsGoodType, Good, GoodManagementStatuses } from './good-management';
 import { ApiServiceTypes } from 'src/app/enums/api-service-types';
 import { HttpErrorResponse } from '@angular/common/http';
-import { v4 as uuidv4 } from 'uuid';
-import { BaseResponse } from 'src/app/commons/abstracts/http-client';
-import { SingleFileUploadResponse } from 'src/app/commons/abstracts/file-storage-service';
 import { CKEditorModule } from 'ckeditor4-angular';
 import { Modals, PageInformation, SelectedImage } from 'src/app/commons/abstracts/common';
 

@@ -30,6 +30,13 @@ const routes: Routes = [
           import(
             './views/shop-management/shop-management-routing.module'
           ).then((m) => m.ShopManagementRoutingModule),
+      },
+      {
+        path: 'product',
+        loadChildren: () =>
+          import(
+            './views/product-management/product-management-routing.module'
+          ).then((m) => m.ProductManagementRoutingModule),
       }
     ],
   },
