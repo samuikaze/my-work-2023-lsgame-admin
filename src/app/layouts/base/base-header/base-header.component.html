@@ -35,9 +35,24 @@
             <li><a class="dropdown-item" routerLink="/article/carousel">輪播管理</a></li>
             <li><a class="dropdown-item" routerLink="/article/aboutus">關於我們</a></li>
             <li><a class="dropdown-item" routerLink="/article/news">最新消息</a></li>
-            <li><a class="dropdown-item" routerLink="/article/product">作品管理</a></li>
             <li><a class="dropdown-item" routerLink="/article/recruit">招募新血</a></li>
             <li><a class="dropdown-item" routerLink="/article/faq">常見問題</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown" *ngIf="isLogin()">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            作品管理
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/product/product">作品管理</a></li>
+            <li><a class="dropdown-item" routerLink="/product/type">作品分類管理</a></li>
+            <li><a class="dropdown-item" routerLink="/product/platform">作品平台管理</a></li>
           </ul>
         </li>
         <li class="nav-item" *ngIf="isLogin()">
