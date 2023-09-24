@@ -8,6 +8,8 @@ import { BaseResponse } from 'src/app/commons/abstracts/http-client';
 import { ApiServiceTypes } from 'src/app/enums/api-service-types';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Buffer } from 'buffer';
+import { v4 as uuidv4 } from 'uuid';
+import { SingleFileUploadResponse } from 'src/app/commons/abstracts/file-storage-service';
 
 @Injectable({
   providedIn: 'root'
@@ -240,5 +242,84 @@ export class CommonService {
    */
   public deepCloneObject(original: any): any {
     return JSON.parse(JSON.stringify(original));
+  }
+
+  /**
+   * 將 DataURL 字串轉換為 Blob 物件
+   * @param dataurl DataURL 字串
+   * @returns Blob 物件
+   *
+   * @throws Dataurl 為空或圖檔的檔案類型無法辨別
+   */
+  public convertDataUrlToBlob(dataurl: string): Blob {
+    if (dataurl.length === 0) {
+      throw new Error('Dataurl 不可為空');
+    }
+
+    const array = dataurl.split(',');
+    const mimeMatch = array[0].match(/:(.*?);/);
+    if (mimeMatch == null) {
+      throw new Error('無法辨別圖檔的檔案類型');
+    }
+    const mime = mimeMatch[1];
+    const byteString = atob(array[1]);
+    let times = byteString.length;
+    let uint8Array = new Uint8Array(times);
+
+    while (times--) {
+      uint8Array[times] = byteString.charCodeAt(times);
+    }
+
+    return new Blob([uint8Array], {type: mime});
+  }
+
+  /**
+   * 上傳檔案
+   * @param filename 檔案名稱
+   * @param file Blob 物件
+   */
+  public async uploadFile(filename: string, file: Blob): Promise<string> {
+
+    let formData = new FormData();
+    formData.append('uploadId', uuidv4());
+    formData.append('filename', filename);
+    formData.append('file', file);
+
+    const baseUri = await this.appEnvironmentService.getConfig<string>(ApiServiceTypes.FileStorageService);
+    const uri = `${baseUri}/api/v1/file/upload`;
+    return new Promise<string>((resolve, reject) => {
+      this.requestService.formDataPost<BaseResponse<SingleFileUploadResponse>>(uri, formData)
+        .subscribe({
+          next: response => {
+            resolve(response.data.path);
+          },
+          error: (errors: HttpErrorResponse) => {
+            this.requestService.requestFailedHandler(errors);
+            reject(errors);
+          }
+        });
+    });
+  }
+
+  /**
+   * 刪除檔案
+   * @param filePath 檔案路徑
+   */
+  public async deleteFile(filePath: string): Promise<void> {
+    const baseUri = await this.appEnvironmentService.getConfig<string>(ApiServiceTypes.FileStorageService);
+    const uri = `${baseUri}/api/v1/file/${filePath}`;
+
+    return new Promise<void>((resolve, reject) => {
+      this.requestService.delete<number>(uri)
+        .subscribe({
+          next: () => {
+            resolve();
+          },
+          error: (errors: HttpErrorResponse) => {
+            this.requestService.requestFailedHandler(errors);
+            reject('刪除檔案失敗');
+          }
+        })
+    });
   }
 }
