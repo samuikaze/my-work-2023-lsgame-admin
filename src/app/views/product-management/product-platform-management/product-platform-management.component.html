@@ -1,0 +1,141 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 mb-3 text-end">
+      <button type="button" class="btn btn-success" (click)="operationModal('addProductPlatformModal', 'open')">新增作品平台</button>
+    </div>
+    <div class="col-12 mb-3">
+      <table class="table product-platform-admin">
+        <thead>
+          <tr>
+            <th scope="col">編號</th>
+            <th scope="col">作品平台名稱</th>
+            <th scope="col">管理</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="productPlatformList.length > 0">
+          <tr *ngFor="let productPlatform of productPlatformList">
+            <td>{{ productPlatform.productPlatformId }}</td>
+            <td>{{ productPlatform.productPlatformName }}</td>
+            <td>
+              <button
+                class="btn btn-primary"
+                (click)="setSpecificProductPlatformData(productPlatform.productPlatformId, 'update')"
+              >
+                編輯
+              </button>&nbsp;
+              <button
+                class="btn btn-danger"
+                (click)="setSpecificProductPlatformData(productPlatform.productPlatformId, 'delete')"
+              >
+                刪除
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="productPlatformList.length == 0">
+          <tr>
+            <td colspan="3" class="text-center">
+              <span class="h4">目前無可以顯示的作品平台資料</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 新增作品平台 -->
+<div class="modal fade" id="addProductPlatform" tabindex="-1" aria-labelledby="addProductPlatformLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addProductPlatformLabel">新增作品平台</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="add-product-type-name" class="form-label">作品平台名稱</label>
+          <input type="text" class="form-control" id="add-product-type-name" placeholder="作品平台名稱" [(ngModel)]="addProductPlatform.productPlatformName" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="operationModal('addProductPlatformModal', 'close'); clearAddProductPlatformForm()"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="fireCreateProductPlatform()"
+          [disabled]="!canFireCreateProductPlatform()"
+        >
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.creating"></span>
+          {{ statuses.creating ? '儲存中 ...' : '儲存' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 編輯作品平台 -->
+<div class="modal fade" id="editProductPlatform" tabindex="-1" aria-labelledby="editProductPlatformLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editProductPlatformLabel">編輯作品平台</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="edit-product-type-name" class="form-label">作品平台名稱</label>
+          <input type="text" class="form-control" id="edit-product-type-name" placeholder="請輸入作品平台名稱" [(ngModel)]="editProductPlatform.productPlatformName">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="operationModal('editProductPlatformModal', 'close'); clearEditProductPlatformForm()"
+        >
+          取消
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="fireEditProductPlatform()"
+          [disabled]="!canFireEditProductPlatform()"
+        >
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.updating"></span>
+          {{ statuses.updating ? '更新中 ...' : '儲存' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 刪除確認視窗 -->
+<div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmDeleteLabel">確認刪除</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          您確定要刪除這筆作品平台嗎？ <span class="fw-bold">這個動作無法復原！</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消返回</button>
+        <button type="button" class="btn btn-danger" (click)="fireDeleteProductPlatform()" [disabled]="statuses.deleting">
+          <span class="spinner-border spinner-border-sm" aria-hidden="true" *ngIf="statuses.deleting"></span>
+          {{ statuses.deleting ? '刪除中' : '確認刪除' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

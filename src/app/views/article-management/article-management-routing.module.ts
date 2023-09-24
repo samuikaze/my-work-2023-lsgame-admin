@@ -15,10 +15,6 @@ const routes: Routes = [
     loadComponent: () => import("./news-management/news-management.component").then(m => m.NewsManagementComponent),
   },
   {
-    path: "product",
-    loadComponent: () => import("./product-management/product-management.component").then(m => m.ProductManagementComponent),
-  },
-  {
     path: "recruit",
     loadComponent: () => import("./recruit-management/recruit-management.component").then(m => m.RecruitManagementComponent),
   },
